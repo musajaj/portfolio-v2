@@ -106,7 +106,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
         <Loader2 className="w-12 h-12 animate-spin text-blue-500 mb-4" />
-        <p className="text-zinc-400 animate-pulse">جاري الاتصال بقاعدة البيانات...</p>
+        <p className="text-zinc-400 animate-pulse">جاري تهيئة تجربة رقمية استثنائية تليق بطموحك...</p>
       </div>
     );
   }
