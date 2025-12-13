@@ -120,7 +120,7 @@ export default function App() {
         </div>
         <h1 className="text-3xl font-bold mb-4">فشل الاتصال بالسيرفر</h1>
         <p className="text-zinc-400 max-w-md mb-8 leading-relaxed">
-          لم نتمكن من جلب بياناتك من Sanity. <br/>
+          لم نتمكن من جلب بياناتك. <br/>
           بما أنك في منطقة محظورة، يرجى <strong>تفعيل الـ VPN</strong> ثم إعادة تحديث الصفحة.
         </p>
         <button 
