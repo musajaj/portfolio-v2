@@ -1,18 +1,15 @@
-import { createClient } from "@sanity/client"; // 👈 استخدمنا المكتبة الصحيحة
+import { createClient } from "@sanity/client";
 
-// ⚠️ استبدل هذا الكود بكود مشروعك الحقيقي
+// استبدل هذا بالكود الخاص بك
 const PROJECT_ID = "0cijksod"; 
 
 export const client = createClient({
   projectId: PROJECT_ID,
   dataset: "production",
   apiVersion: "2024-01-01",
-  useCdn: false, // يجب أن يكون false لضمان عمل البروكسي
-  
-  // 👇 منطق النفق الذكي
-  // إذا كان الموقع مرفوعاً (ليس localhost)، نستخدم رابط النفق عبر Netlify
-  // وإذا كنت تعمل على جهازك، نستخدم الرابط المباشر
-  apiHost: typeof window !== 'undefined' && window.location.hostname !== 'localhost'
-    ? window.location.origin + '/sanity-proxy'
-    : `https://${PROJECT_ID}.api.sanity.io`,
+  useCdn: false, 
+  // نستخدم الشرطية: إذا كنا في Localhost نستخدم الرابط المباشر، وإذا رفعنا الموقع نستخدم البروكسي
+  apiHost: typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? `https://${PROJECT_ID}.api.sanity.io`
+    : '/sanity-proxy', // استخدام المسار النسبي مباشرة أكثر أماناً
 });

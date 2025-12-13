@@ -1,2 +1,2 @@
 /* /index.html  200
-/sanity-proxy/* https://0cijksod.api.sanity.io/* 200
+/sanity-proxy/* https://0cijksod.api.sanity.io/:splat  200
