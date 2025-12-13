@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -48,9 +47,15 @@ const MATRIX_ITEMS = [
 
 interface PainMatrixProps {
   lang: Language;
+  config?: {
+    successTitle: string;
+    successDesc: string;
+    ctaText: string;
+    ctaLink?: string;
+  };
 }
 
-export default function PainMatrix({ lang }: PainMatrixProps) {
+export default function PainMatrix({ lang, config }: PainMatrixProps) {
   const isRTL = lang === Language.AR;
   
   // Track IDs of fixed items
@@ -68,18 +73,21 @@ export default function PainMatrix({ lang }: PainMatrixProps) {
 
   const allFixed = fixedIds.length === MATRIX_ITEMS.length;
 
-  // Content Dictionary
-  const content = {
+  // دمج الإعدادات القادمة من Sanity مع القيم الافتراضية
+  const settings = {
+    title: config?.successTitle || (isRTL ? "لقد قضيت على كل المشاكل! 🎉" : "You've Destroyed All Problems! 🎉"),
+    desc: config?.successDesc || (isRTL ? "أنت جاهز الآن لبدء حياة جديدة." : "You are now ready to start a new life."),
+    btnText: config?.ctaText || (isRTL ? "احصل على النظام الكامل" : "Get The Full System"),
+    link: config?.ctaLink || "#projects",
+    
+    // نصوص الواجهة الثابتة
     headlineStart: isRTL ? "ما الذي" : "What",
     headlinePain: isRTL ? "يؤلمك" : "Hurts You",
     headlineEnd: isRTL ? "الآن؟" : "Right Now?",
     subHeadline: isRTL 
       ? "اضغط على مشاكلك لترى كيف يحلها UniStack." 
       : "Tap on your pain points to see how UniStack solves them.",
-    clickToFix: isRTL ? "اضغط للحل" : "Click to fix",
-    successTitle: isRTL ? "لقد قضيت على كل المشاكل! 🎉" : "You've Destroyed All Problems! 🎉",
-    successDesc: isRTL ? "أنت جاهز الآن لبدء حياة جديدة." : "You are now ready to start a new life.",
-    ctaButton: isRTL ? "احصل على النظام الكامل" : "Get The Full System"
+    clickToFix: isRTL ? "اضغط للحل" : "Click to fix"
   };
 
   return (
@@ -89,9 +97,9 @@ export default function PainMatrix({ lang }: PainMatrixProps) {
         {/* Header */}
         <div className="mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-            {content.headlineStart} <span className="text-red-500">{content.headlinePain}</span> {content.headlineEnd}
+            {settings.headlineStart} <span className="text-red-500">{settings.headlinePain}</span> {settings.headlineEnd}
           </h2>
-          <p className="text-zinc-400">{content.subHeadline}</p>
+          <p className="text-zinc-400">{settings.subHeadline}</p>
         </div>
 
         {/* THE MATRIX GRID */}
@@ -128,7 +136,7 @@ export default function PainMatrix({ lang }: PainMatrixProps) {
                       <span className="text-red-400 font-bold text-lg md:text-xl uppercase tracking-wider px-2 text-center">
                         {painText}
                       </span>
-                      <span className="text-[10px] text-red-500/50 mt-2">{content.clickToFix}</span>
+                      <span className="text-[10px] text-red-500/50 mt-2">{settings.clickToFix}</span>
                     </motion.div>
                   ) : (
                     /* STATE 2: CURE (GREEN/BLUE) */
@@ -162,14 +170,17 @@ export default function PainMatrix({ lang }: PainMatrixProps) {
               animate={{ opacity: 1, y: 0 }}
               className="mt-12 p-6 bg-green-500/10 border border-green-500/30 rounded-3xl inline-block"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">{content.successTitle}</h3>
-              <p className="text-zinc-400 mb-6">{content.successDesc}</p>
-              <a 
-                href="#projects" 
-                className="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-zinc-200 transition-colors inline-block"
-              >
-                {content.ctaButton}
-              </a>
+              <h3 className="text-2xl font-bold text-white mb-2">{settings.title}</h3>
+              <p className="text-zinc-400 mb-6">{settings.desc}</p>
+              
+              {settings.link && (
+                <a 
+                  href={settings.link} 
+                  className="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-zinc-200 transition-colors inline-block"
+                >
+                  {settings.btnText}
+                </a>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

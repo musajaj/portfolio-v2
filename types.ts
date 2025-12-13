@@ -1,3 +1,15 @@
+export enum Language {
+  EN = 'en',
+  AR = 'ar',
+}
+
+export interface Service {
+  _id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
 export interface Project {
   id?: string;
   slug: string;
@@ -9,23 +21,8 @@ export interface Project {
   externalLink: string;
   featured?: boolean;
   category: string;
-  image?: string; // Sanity Image URL
+  image?: string;
   price?: string;
-}
-
-export interface Article {
-  id: string;
-  title: string;
-  category: string;
-  link: string;
-  date: string;
-}
-
-export interface Service {
-  id: string;
-  title: string;
-  description: string;
-  icon: 'layout' | 'consulting';
 }
 
 export interface Profile {
@@ -40,14 +37,32 @@ export interface Profile {
   tags: string[];
   email: string;
   socials: {
-    notionArabs: string;
+    github: string;
+    linkedin: string;
+    twitter: string;
+    youtube: string;
+    instagram: string;
     facebook: string;
-    whatsapp: string;
-    telegram: string;
+    gumroad: string;
+    notion: string;
+    producthunt: string;
   };
-}
-
-export enum Language {
-  AR = 'ar',
-  EN = 'en'
+  // الإعدادات الديناميكية
+  offerConfig?: {
+    isActive: boolean;
+    title: string;
+    discountCode: string;
+    discountPercent: string;
+    offerLink: string;
+  };
+  painMatrixConfig?: {
+    successTitle: string;
+    successDesc: string;
+    ctaText: string;
+    ctaLink?: string;
+  };
+  roiConfig?: {
+    ctaText: string;
+    ctaLink?: string;
+  };
 }

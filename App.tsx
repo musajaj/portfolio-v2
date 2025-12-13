@@ -16,72 +16,71 @@ import WallOfLove from './components/WallOfLove';
 import CommitmentSwitch from './components/CommitmentSwitch';
 import PainMatrix from './components/PainMatrix';
 import { client } from './sanity/client';
-// استيراد جميع استعلامات Sanity التي أضفناها
 import { 
   profileQuery, 
   projectsQuery, 
   articlesQuery, 
   statsQuery, 
-  reviewsQuery 
+  reviewsQuery,
+  servicesQuery
 } from './sanity/queries';
 import { PROFILE as DEFAULT_PROFILE } from './constants';
 
 export default function App() {
-  // الحالة الافتراضية: اللغة العربية
   const [lang, setLang] = useState<Language>(Language.AR);
   
-  // مخازن البيانات (State Management)
+  // مخازن البيانات
   const [profileData, setProfileData] = useState<Profile>(DEFAULT_PROFILE);
   const [projectsData, setProjectsData] = useState<Project[]>([]);
   const [articlesData, setArticlesData] = useState([]);
   const [statsData, setStatsData] = useState([]);
   const [reviewsData, setReviewsData] = useState([]);
+  const [servicesData, setServicesData] = useState([]);
 
-  // Fetch Sanity Data (جلب البيانات عند التحميل)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. جلب البروفايل
+        console.log("🚀 Starting Data Fetch...");
+
+        // 1. Profile
         const fetchedProfile = await client.fetch(profileQuery);
-        console.log("Sanity Profile Data:", fetchedProfile); // للتأكد من وصول الصورة
-        if (fetchedProfile) {
-          setProfileData({ ...DEFAULT_PROFILE, ...fetchedProfile });
-        }
+        if (fetchedProfile) setProfileData({ ...DEFAULT_PROFILE, ...fetchedProfile });
 
-        // 2. جلب المشاريع
+        // 2. Projects
         const fetchedProjects = await client.fetch(projectsQuery);
-        setProjectsData(fetchedProjects);
+        setProjectsData(fetchedProjects || []);
 
-        // 3. جلب المقالات
+        // 3. Articles
         const fetchedArticles = await client.fetch(articlesQuery);
-        setArticlesData(fetchedArticles);
+        setArticlesData(fetchedArticles || []);
 
-        // 4. جلب الإحصائيات
+        // 4. Stats
         const fetchedStats = await client.fetch(statsQuery);
-        setStatsData(fetchedStats);
+        setStatsData(fetchedStats || []);
 
-        // 5. جلب المراجعات (جدار الحب)
+        // 5. Reviews
         const fetchedReviews = await client.fetch(reviewsQuery);
-        setReviewsData(fetchedReviews);
+        setReviewsData(fetchedReviews || []);
+
+        // 6. Services
+        const fetchedServices = await client.fetch(servicesQuery);
+        setServicesData(fetchedServices || []);
         
-        // سجل فحص شامل
-        console.log("All Data Loaded:", { fetchedProjects, fetchedArticles, fetchedStats, fetchedReviews });
+        console.log("✅ Data Fetch Complete");
 
       } catch (error) {
-        console.warn("Sanity Fetch Failed (Using Fallback Data):", error);
+        console.error("❌ Sanity Fetch Error:", error);
       }
     };
 
     fetchData();
   }, []);
 
-  // تحديث اتجاه الصفحة (RTL)
   useEffect(() => {
     document.documentElement.dir = lang === Language.AR ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
   }, [lang]);
 
-  // التنقل السلس
   const handleNavigate = (target: string) => {
     if (target === '#') {
       window.history.pushState(null, '', '/');
@@ -106,26 +105,16 @@ export default function App() {
         
         <main className="relative w-full">
           <Hero lang={lang} profile={profileData} />
-          
-          {/* تمرير بيانات الإحصائيات من Sanity */}
           <StatsSection stats={statsData} />
-          
-          <PainMatrix lang={lang} />
-          
-          {/* تمرير بيانات المراجعات من Sanity */}
+          <PainMatrix lang={lang} config={profileData.painMatrixConfig} />
           <WallOfLove reviews={reviewsData} />
-          
-          {/* تمرير بيانات المشاريع من Sanity */}
           <ProductStore projects={projectsData} />
-          
-          {/* تمرير بيانات المقالات من Sanity */}
           <Articles lang={lang} articles={articlesData} />
-          
-          <Services lang={lang} />
+          <Services lang={lang} services={servicesData} />
           <About lang={lang} profile={profileData} />
-          <ROICalculator />
+          <ROICalculator config={profileData.roiConfig} />
           <ValueScale />
-          <CommitmentSwitch />
+          <CommitmentSwitch offer={profileData.offerConfig} />
         </main>
         
         <BentoFooter profile={profileData} />

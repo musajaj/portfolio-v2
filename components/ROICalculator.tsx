@@ -4,13 +4,24 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, BookOpen, TrendingUp, AlertCircle } from "lucide-react";
 
-export default function ROICalculator() {
+interface ROIProps {
+  config?: {
+    ctaText: string;
+    ctaLink?: string;
+  };
+}
+
+export default function ROICalculator({ config }: ROIProps) {
   const [hoursPerDay, setHoursPerDay] = useState(2);
 
-  // The Math
+  // The Math Logic (تمت إعادتها بالكامل لتجنب الأخطاء)
   const yearlyWasted = Math.round(hoursPerDay * 365);
-  const hoursSaved = Math.round(yearlyWasted * 0.8); // UniStack saves 80%
-  const booksEquivalent = Math.floor(hoursSaved / 7); // Avg book takes 7 hours
+  const hoursSaved = Math.round(yearlyWasted * 0.8); // افتراض توفير 80%
+  const booksEquivalent = Math.floor(hoursSaved / 7); // متوسط قراءة كتاب 7 ساعات
+
+  // القيم الافتراضية والديناميكية
+  const btnText = config?.ctaText || "احصل على UniStack الآن";
+  const btnLink = config?.ctaLink;
 
   return (
     <section className="py-24 px-4 relative z-10">
@@ -118,13 +129,17 @@ export default function ROICalculator() {
             <p className="text-zinc-400 mb-6">
               الوقت هو أثمن ما تملك. لا تدعه يضيع في الفوضى.
             </p>
-            <a 
-              href="/projects/unistack-student-dashboard" // Updated to internal link
-              className="inline-flex items-center gap-2 bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full font-bold text-lg transition-all active:scale-95"
-            >
-              <span>احصل على UniStack الآن</span>
-              <TrendingUp size={20} />
-            </a>
+            
+            {/* نظهر الزر فقط إذا كان هناك رابط قادم من الإعدادات */}
+            {btnLink && (
+              <a 
+                href={btnLink}
+                className="inline-flex items-center gap-2 bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full font-bold text-lg transition-all active:scale-95"
+              >
+                <span>{btnText}</span>
+                <TrendingUp size={20} />
+              </a>
+            )}
           </div>
 
         </div>

@@ -1,23 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutTemplate, BrainCircuit, PenTool } from 'lucide-react';
-import { SERVICES } from '../constants';
+import { LayoutTemplate, BrainCircuit, PenTool, Database, Zap, Code } from 'lucide-react';
 import { Language } from '../types';
 
 interface ServicesProps {
   lang: Language;
+  services?: any[]; // البيانات القادمة من Sanity
 }
 
-export const Services: React.FC<ServicesProps> = ({ lang }) => {
+export const Services: React.FC<ServicesProps> = ({ lang, services }) => {
   const isRTL = lang === Language.AR;
 
+  // خريطة الأيقونات
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'layout': return <LayoutTemplate size={32} className="text-blue-400" />;
-      case 'consulting': return <BrainCircuit size={32} className="text-blue-400" />;
-      default: return <PenTool size={32} className="text-blue-400" />;
+      case 'brain': return <BrainCircuit size={32} className="text-blue-400" />;
+      case 'code': return <Code size={32} className="text-blue-400" />;
+      case 'pen': return <PenTool size={32} className="text-blue-400" />;
+      case 'database': return <Database size={32} className="text-blue-400" />;
+      case 'zap': return <Zap size={32} className="text-blue-400" />;
+      default: return <LayoutTemplate size={32} className="text-blue-400" />;
     }
   };
+
+  // استخدام البيانات الجديدة أو مصفوفة فارغة
+  const displayServices = services && services.length > 0 ? services : [];
+
+  if (displayServices.length === 0) return null; // إخفاء القسم إذا لم تكن هناك خدمات
 
   return (
     <section id="services" className="relative z-10 border-t border-white/5 px-6 py-24">
@@ -32,9 +42,9 @@ export const Services: React.FC<ServicesProps> = ({ lang }) => {
         </div>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {SERVICES.map((service, index) => (
+          {displayServices.map((service, index) => (
             <motion.div
-              key={service.id}
+              key={service._id || index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

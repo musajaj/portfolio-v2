@@ -23,6 +23,10 @@ const Icons = {
   Gmail: (props: any) => (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
   ),
+  // أيقونة Notion Arabs (نفس شعار Notion)
+  NotionArabs: (props: any) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M4.021 2.183 2.583 4.016c-.201.254-.038.508.22.508h2.425l.025.022 4.854 8.728V4.524h-1.2c-.32 0-.349-.273-.257-.508l.56-1.451c.134-.349.374-.382.672-.382h5.952c.309 0 .586.203.403.508l-.478 1.334h-1.488v11.707l-3.29-5.918v5.918h1.344c.292 0 .347.226.257.508l-.562 1.454c-.133.349-.374.382-.672.382H5.32c-.309 0-.586-.203-.403-.508l.481-1.334h1.485l.003-14.57z" /></svg>
+  ),
 };
 
 const platformConfig: any = {
@@ -62,6 +66,13 @@ const platformConfig: any = {
     label: "Email", 
     colorClass: "text-[#EA4335]", 
     bgClass: "bg-[#EA4335]/10" 
+  },
+  // الإعدادات الجديدة لـ Notion Arabs
+  notionarabs: { 
+    icon: Icons.NotionArabs, 
+    label: "Notion Arabs", 
+    colorClass: "text-white", // لون أبيض/فضي أنيق
+    bgClass: "bg-white/10" 
   },
 };
 
@@ -138,7 +149,6 @@ function ReviewCard({ review }: { review: any }) {
       
       <div className="px-5 py-3 bg-white/5 border-b border-white/5 flex items-center justify-between">
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${config.bgClass}`}>
-            {/* تم التعديل هنا: استخدام width و height بدلاً من size */}
             <IconComponent width={16} height={16} className={config.colorClass} />
             <span className={`text-xs font-bold uppercase tracking-wider ${config.colorClass}`}>
                 {config.label}

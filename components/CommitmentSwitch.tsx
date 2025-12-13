@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Check, ShoppingCart, Copy, ExternalLink, Gift } from "lucide-react";
 
-// Particle component (نفس المؤثرات البصرية السابقة)
+// Particle component
 const Particle: React.FC<{ index: number }> = ({ index }) => {
   const randomX = (Math.random() - 0.5) * 600; 
   const randomY = (Math.random() - 1) * 200 - 50; 
@@ -29,29 +29,43 @@ const Particle: React.FC<{ index: number }> = ({ index }) => {
   );
 };
 
-export default function CommitmentSwitch() {
+// تعريف نوع البيانات المتوقعة
+interface OfferConfig {
+  isActive: boolean;
+  title: string;
+  discountCode: string;
+  discountPercent: string;
+  offerLink: string;
+}
+
+export default function CommitmentSwitch({ offer }: { offer?: OfferConfig }) {
   const [isOn, setIsOn] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // إعدادات العرض (يمكنك تعديل الكود والرابط هنا)
-  const DISCOUNT_CODE = "STUDENT50"; 
-  const PURCHASE_LINK = "https://gumroad.com/l/your-product"; // 👈 ضع رابط المنتج هنا
+  // استخدام البيانات من Sanity أو قيم افتراضية آمنة
+  const config = {
+    isActive: offer?.isActive ?? true, // افتراضياً مفعل
+    title: offer?.title || "تم تفعيل عرض الطالب المميز!",
+    code: offer?.discountCode || "STUDENT50",
+    percent: offer?.discountPercent || "50%",
+    link: offer?.offerLink || "#"
+  };
 
   const toggleSwitch = () => {
     setIsOn(!isOn);
-    if (isOn) setCopied(false); // إعادة تعيين حالة النسخ عند الإغلاق
+    if (isOn) setCopied(false);
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(DISCOUNT_CODE);
+    if (!config.code) return;
+    navigator.clipboard.writeText(config.code);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // إخفاء علامة النسخ بعد ثانيتين
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <section className="py-24 px-4 relative z-10 flex flex-col items-center justify-center overflow-visible">
       
-      {/* Label / Question */}
       <div className="text-center mb-12">
         <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
           القرار بيدك. <span className="text-zinc-500">كيف تريد أن تدير حياتك؟</span>
@@ -63,7 +77,6 @@ export default function CommitmentSwitch() {
         className="relative w-full max-w-[500px] h-24 rounded-full cursor-pointer select-none mb-8"
         onClick={toggleSwitch}
       >
-        {/* Background Layer */}
         <motion.div
           className="absolute inset-0 rounded-full border border-white/5 shadow-inner overflow-hidden"
           animate={{
@@ -80,9 +93,7 @@ export default function CommitmentSwitch() {
           )}
         </motion.div>
 
-        {/* TEXT LAYERS */}
         <div className="absolute inset-0 flex items-center justify-between px-6 pointer-events-none z-10">
-           {/* OFF TEXT */}
            <motion.div 
              animate={{ opacity: isOn ? 0 : 1, x: isOn ? -20 : 0 }}
              className="flex items-center gap-3 text-zinc-400 font-medium text-lg ml-4"
@@ -91,7 +102,6 @@ export default function CommitmentSwitch() {
              <span>ما زلت أستخدم الورقة والقلم...</span>
            </motion.div>
 
-           {/* ON TEXT */}
            <motion.div 
              animate={{ opacity: isOn ? 1 : 0, x: isOn ? 0 : 20 }}
              className="flex items-center gap-3 text-white font-bold text-xl absolute right-8"
@@ -101,7 +111,6 @@ export default function CommitmentSwitch() {
            </motion.div>
         </div>
 
-        {/* THE HANDLE */}
         <motion.div
           className="absolute top-2 bottom-2 w-20 h-20 bg-white rounded-full shadow-2xl z-20 flex items-center justify-center"
           animate={{
@@ -117,7 +126,6 @@ export default function CommitmentSwitch() {
           </motion.div>
         </motion.div>
 
-        {/* FIREWORKS */}
         <AnimatePresence>
           {isOn && Array.from({ length: 20 }).map((_, i) => (
             <Particle key={i} index={i} />
@@ -125,9 +133,9 @@ export default function CommitmentSwitch() {
         </AnimatePresence>
       </div>
 
-      {/* --- THE NEW OFFER CARD (يظهر عند التفعيل) --- */}
+      {/* --- بطاقة العرض (تظهر فقط إذا كان العرض مفعلاً في Sanity) --- */}
       <AnimatePresence>
-        {isOn && (
+        {isOn && config.isActive && (
           <motion.div
             initial={{ opacity: 0, y: -20, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
@@ -137,32 +145,31 @@ export default function CommitmentSwitch() {
           >
             <div className="bg-zinc-900/80 backdrop-blur-xl border border-blue-500/30 rounded-2xl p-6 mt-4 shadow-[0_0_40px_rgba(37,99,235,0.15)] flex flex-col items-center text-center gap-4">
               
-              {/* Header */}
               <div className="flex items-center gap-2 text-blue-400 font-bold text-lg">
                 <Gift className="animate-bounce" size={20} />
-                <span>تم تفعيل عرض الطالب المميز!</span>
+                <span>{config.title}</span>
               </div>
               
               <p className="text-zinc-400 text-sm">
-                لقد حصلت على خصم خاص بنسبة <span className="text-white font-bold">50%</span>. انسخ الكود واستخدمه عند الدفع.
+                لقد حصلت على خصم خاص بنسبة <span className="text-white font-bold">{config.percent}</span>. انسخ الكود واستخدمه عند الدفع.
               </p>
 
-              {/* Code & Copy Section */}
-              <div className="flex items-center gap-2 w-full">
-                <div 
-                  className="flex-1 bg-black/40 border border-white/10 rounded-xl p-3 font-mono text-xl tracking-widest text-white font-bold text-center cursor-pointer hover:border-blue-500/50 transition-colors relative group"
-                  onClick={copyToClipboard}
-                >
-                  {DISCOUNT_CODE}
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 group-hover:text-blue-400 transition-colors">
-                    {copied ? <Check size={18} /> : <Copy size={18} />}
-                  </span>
+              {config.code && (
+                <div className="flex items-center gap-2 w-full">
+                  <div 
+                    className="flex-1 bg-black/40 border border-white/10 rounded-xl p-3 font-mono text-xl tracking-widest text-white font-bold text-center cursor-pointer hover:border-blue-500/50 transition-colors relative group"
+                    onClick={copyToClipboard}
+                  >
+                    {config.code}
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 group-hover:text-blue-400 transition-colors">
+                      {copied ? <Check size={18} /> : <Copy size={18} />}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Action Button */}
               <a 
-                href={PURCHASE_LINK}
+                href={config.link}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-blue-600/20"

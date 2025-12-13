@@ -27,6 +27,7 @@ export const reviewType = defineType({
           { title: 'Reddit', value: 'reddit' },
           { title: 'Telegram', value: 'telegram' },
           { title: 'Gmail / Email', value: 'email' },
+          { title: 'Notion Arabs', value: 'notionarabs' }, // 👈 الخيار الجديد
         ],
       },
       validation: Rule => Rule.required()
