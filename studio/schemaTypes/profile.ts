@@ -92,7 +92,7 @@ export const profileType = defineType({
           { name: 'notionArabs', title: 'Notion Arabs URL', type: 'url' },
           { name: 'facebook', title: 'Facebook URL', type: 'url' },
           { name: 'whatsapp', title: 'WhatsApp URL', type: 'url' },
-          { name: 'telegram', title: 'Telegram Handle', type: 'string' }
+          { name: 'telegram', title: 'Telegram Handle', type: 'url' }
       ]
     }),
   ],
